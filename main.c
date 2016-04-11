@@ -2,6 +2,7 @@
 #define _LARGEFILE64_SOURCE
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <libgen.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -133,9 +134,25 @@ int main(int argc, char* argv[])
 
 	log_file = file_add_suffix(snapshot_file, ".log");
 
-	// TODO: Try to open and create files
+	// Try to open and create files
+	FILE *ofd = fopen(original_file, "rb");
+	if(ofd == NULL)
+	{
+		return -2;
+	}
 
-	// TODO: Run BUSE
+	FILE *sfd = fopen(snapshot_file, "rb+");
+	if(sfd == NULL)
+	{
+		return -3;
+	}
 
-	return 0;
+	FILE *lfd = fopen(log_file, "rb+");
+	if(lfd == NULL)
+	{
+		return -4;
+	}
+
+	// Run BUSE
+	return buse_main(virtual_file, &onion_bop, NULL);
 }
